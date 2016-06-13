@@ -20,3 +20,13 @@ function! textobj#methodcall#select(mode)
    return ['v', head_pos, tail_pos]
 endfunction
 
+function! textobj#methodcall#select_chain()
+   silent! execute 'normal ?\v([^.]&\W)\zs\w+((\.{0,1}\w+)*\((\(([^()]|\n)*\)|([^()]|\n)*){-}\)(\_s)*)+' . "\<cr>"
+   let head = getpos('.')
+   silent! execute 'normal //e' . "\<cr>"
+   let tail = getpos('.')
+   if tail == head
+      return 0
+   endif
+   return ['v', head, tail]
+endfunction
