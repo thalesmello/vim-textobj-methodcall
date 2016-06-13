@@ -4,7 +4,7 @@ call textobj#user#plugin('methodcall', {
          \   'select-i': 'im', 'select-i-function': 'textobj#methodcall#select_i',
          \ },
          \ 'chain': {
-         \   'select-function': 'textobj#methodcall#select_chain',
-         \   'select': ['aM', 'iM']
+         \   'select-a': 'aM', 'select-a-function': 'textobj#methodcall#select_chain_a',
+         \   'select-i': 'iM', 'select-i-function': 'textobj#methodcall#select_chain_i'
          \ }})
 
