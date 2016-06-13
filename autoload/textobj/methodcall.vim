@@ -31,7 +31,7 @@ function! textobj#methodcall#select_chain(motion)
    if a:motion == 'a'
       silent! normal! [(
    endif
-   silent! execute 'normal ?\v([^.]&\W)\zs\w+((\.{0,1}\w+)*\((\(([^()]|\n)*\)|[^()]|\n){-}\)(\_s)*)+' . "\<cr>"
+   silent! execute 'normal ?\v([^.]&\W)\zs\w+((\.{0,1}\w+)*\((\(([^()]|\n)*\)|[^()]|\n){-}\)\ze(\_s)*)+' . "\<cr>"
    let head = getpos('.')
    silent! execute 'normal //e' . "\<cr>"
    let tail = getpos('.')
