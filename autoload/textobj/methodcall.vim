@@ -24,19 +24,24 @@ endfunction
 function! textobj#methodcall#select_chain_i()
    return textobj#methodcall#select_chain('i')
 endfunction
+
 function! textobj#methodcall#select_chain_a()
    return textobj#methodcall#select_chain('i')
 endfunction
+
 function! textobj#methodcall#select_chain(motion)
    if a:motion == 'a'
       silent! normal! [(
    endif
-   silent! execute 'normal ?\v([^.]&\W)\zs\w+((\.{0,1}\w+)*\((\(([^()]|\n)*\)|[^()]|\n){-}\)\ze(\_s)*)+' . "\<cr>"
+
+   silent! execute 'normal ?\v([^.]&\W)\zs\w+((\.{0,1}\w+)*\(([^()]|\n|\(([^()]|\n|([^()]|\n|([^()]|\n)))*\)){-}\)\ze(\_s)*)+' . "\<cr>"
    let head = getpos('.')
    silent! execute 'normal //e' . "\<cr>"
    let tail = getpos('.')
+
    if tail == head
       return 0
    endif
+
    return ['v', head, tail]
 endfunction
