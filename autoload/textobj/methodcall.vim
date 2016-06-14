@@ -26,7 +26,11 @@ function! textobj#methodcall#select_chain_i()
 endfunction
 
 function! textobj#methodcall#select_chain_a()
-   return textobj#methodcall#select_chain('i')
+   return textobj#methodcall#select_chain('a')
+endfunction
+
+function! s:char_under_cursor()
+    return getline('.')[col('.') - 1]
 endfunction
 
 function! textobj#methodcall#select_chain(motion)
@@ -34,10 +38,23 @@ function! textobj#methodcall#select_chain(motion)
       silent! normal! [(
    endif
 
-   silent! execute 'normal ?\v([^.]&\W)\zs\w+((\.{0,1}\w+)*\(([^()]|\n|\(([^()]|\n|([^()]|\n|([^()]|\n)))*\)){-}\)\ze(\_s)*)+' . "\<cr>"
+   silent! execute 'normal! w?\v(\.{0,1}\w+)+' . "\<cr>"
    let head = getpos('.')
-   silent! execute 'normal //e' . "\<cr>"
+   while s:char_under_cursor() == '.'
+      silent! execute "normal! ?)\<cr>%"
+      silent! execute 'normal! w?\v(\.{0,1}\w+)+' . "\<cr>"
+      let head = getpos('.')
+   endwhile
+
+   silent! execute "normal! %"
    let tail = getpos('.')
+   silent! execute 'normal! /\v(\.{0,1}\w+)+' . "\<cr>"
+   while s:char_under_cursor() == '.'
+      silent! execute "normal! %"
+      let tail = getpos('.')
+      silent! execute 'normal! /\v(\.{0,1}\w+)+' . "\<cr>"
+   endwhile
+   call setpos('.', tail)
 
    if tail == head
       return 0
@@ -45,3 +62,4 @@ function! textobj#methodcall#select_chain(motion)
 
    return ['v', head, tail]
 endfunction
+
