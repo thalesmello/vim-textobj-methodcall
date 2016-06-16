@@ -11,7 +11,7 @@ function! textobj#methodcall#select(motion)
       silent! call s:move_to_outer_scope()
    endif
 
-   silent! execute "normal! w?\\v(\\.{0,1}\\w+)+\<cr>"
+   silent! call s:move_to_previous_method_call()
    let head_pos = getpos('.')
    call s:move_to_scope_tail()
    let tail_pos = getpos('.')
@@ -37,19 +37,20 @@ function! textobj#methodcall#select_chain(motion)
    if a:motion == 'a'
       silent! call s:move_to_outer_scope()
    endif
-   silent! execute 'normal! w?\v(\.{0,1}\w+)+' . "\<cr>"
+   silent! call s:move_to_previous_method_call()
    let head = getpos('.')
    while s:char_under_cursor() == '.'
-      silent! execute "normal! ?)\<cr>%"
-      silent! execute 'normal! w?\v(\.{0,1}\w+)+' . "\<cr>"
+      silent! call s:move_to_previous_scope_tail()
+      silent! call s:move_to_scope_head()
+      silent! call s:move_to_previous_method_call()
       let head = getpos('.')
    endwhile
 
-   silent! execute "normal! %"
+   silent! call s:move_to_scope_tail()
    let tail = getpos('.')
    silent! execute 'normal! /\v(\.{0,1}\w+)+' . "\<cr>"
    while s:char_under_cursor() == '.'
-      silent! execute "normal! %"
+      silent! call s:move_to_scope_tail()
       let tail = getpos('.')
       silent! execute 'normal! /\v(\.{0,1}\w+)+' . "\<cr>"
    endwhile
@@ -71,12 +72,25 @@ function! s:move_to_outer_scope()
    endif
 endfunction
 
+function! s:move_to_previous_method_call()
+   if &filetype == 'ruby'
+      silent! execute 'normal! ?\v(\.{0,1}\w+)+' . "\<cr>"
+   else
+      silent! execute 'normal! w?\v(\.{0,1}\w+)+' . "\<cr>"
+   endif
+endfunction
+
 function! s:move_to_previous_scope_tail()
    call search(s:get_scope_tail(), 'bW')
 endfunction
 
 function! s:move_to_scope_head()
-   call search(s:get_scope_head(), 'W')
+   if &filetype == 'ruby'
+      let indent = textobj#methodcall#ruby#current_indent()
+      call textobj#methodcall#ruby#search_head(indent + 1)
+   else
+      normal! %
+   endif
 endfunction
 
 function! s:move_to_scope_tail()
