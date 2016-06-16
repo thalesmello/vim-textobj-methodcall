@@ -6,14 +6,14 @@ function! textobj#methodcall#select_i()
    return textobj#methodcall#select('i')
 endfunction
 
-
 function! textobj#methodcall#select(motion)
    if a:motion == 'a'
-      silent! normal! [(
+      silent! call s:move_to_outer_scope()
    endif
+
    silent! execute "normal! w?\\v(\\.{0,1}\\w+)+\<cr>"
    let head_pos = getpos('.')
-   normal! %
+   call s:move_to_scope_tail()
    let tail_pos = getpos('.')
    if tail_pos == head_pos
       return 0
@@ -35,9 +35,8 @@ endfunction
 
 function! textobj#methodcall#select_chain(motion)
    if a:motion == 'a'
-      silent! normal! [(
+      silent! call s:move_to_outer_scope()
    endif
-
    silent! execute 'normal! w?\v(\.{0,1}\w+)+' . "\<cr>"
    let head = getpos('.')
    while s:char_under_cursor() == '.'
@@ -63,3 +62,45 @@ function! textobj#methodcall#select_chain(motion)
    return ['v', head, tail]
 endfunction
 
+function! s:move_to_outer_scope()
+   if &filetype == 'ruby'
+      let indent = textobj#methodcall#ruby#current_indent()
+      call textobj#methodcall#ruby#search_head(indent)
+   else
+      normal! [(
+   endif
+endfunction
+
+function! s:move_to_previous_scope_tail()
+   call search(s:get_scope_tail(), 'bW')
+endfunction
+
+function! s:move_to_scope_head()
+   call search(s:get_scope_head(), 'W')
+endfunction
+
+function! s:move_to_scope_tail()
+   if &filetype == 'ruby'
+      call search(s:get_scope_head())
+      call textobj#methodcall#ruby#search_tail(indent('.'), 'rubyControl')
+   else
+      normal! %
+   endif
+endfunction
+command! MoveScopeTail call s:move_to_scope_tail()
+
+function! s:get_scope_head()
+   if &filetype == 'ruby'
+      return '\<do\>'
+   else
+      return '\<(\>'
+   endif
+endfunction
+
+function! s:get_scope_tail()
+   if &filetype == 'ruby'
+      return '\<end\>'
+   else
+      return '\<)\>'
+   endif
+endfunction
