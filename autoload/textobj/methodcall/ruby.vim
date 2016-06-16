@@ -69,7 +69,7 @@ function! textobj#methodcall#ruby#move_to_scope_head()
 endfunction
 
 function! textobj#methodcall#ruby#move_to_scope_tail()
-   call search(s:get_scope_head())
+   call search(textobj#methodcall#ruby#get_scope_head())
    call textobj#methodcall#ruby#search_tail(indent('.'), 'rubyControl')
 endfunction
 

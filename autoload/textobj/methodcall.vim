@@ -92,11 +92,11 @@ function! s:get_scope_tail()
    call s:syntax_motion('get_scope_tail')
 endfunction
 
+let s:custom_syntax_motions = ['ruby']
 function! s:syntax_motion(method)
-   let candidate = 'textobj#methodcall#' . &filetype . '#' . a:method
-   if exists('*' . candidate)
-      execute 'call ' . candidate . '()'
+   if index(s:custom_syntax_motions, &filetype) >= 0
+      call textobj#methodcall#{&filetype}#{a:method}()
    else
-      execute 'call textobj#methodcall#default#' . a:method . '()'
+      call textobj#methodcall#default#{a:method}()
    endif
 endfunction
