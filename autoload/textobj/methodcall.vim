@@ -64,20 +64,11 @@ function! textobj#methodcall#select_chain(motion)
 endfunction
 
 function! s:move_to_outer_scope()
-   if &filetype == 'ruby'
-      let indent = textobj#methodcall#ruby#current_indent()
-      call textobj#methodcall#ruby#search_head(indent)
-   else
-      normal! [(
-   endif
+   call s:syntax_motion('move_to_outer_scope')
 endfunction
 
 function! s:move_to_previous_method_call()
-   if &filetype == 'ruby'
-      silent! execute 'normal! ?\v(\.{0,1}\w+)+' . "\<cr>"
-   else
-      silent! execute 'normal! w?\v(\.{0,1}\w+)+' . "\<cr>"
-   endif
+   call s:syntax_motion('move_to_previous_method_call')
 endfunction
 
 function! s:move_to_previous_scope_tail()
@@ -85,36 +76,27 @@ function! s:move_to_previous_scope_tail()
 endfunction
 
 function! s:move_to_scope_head()
-   if &filetype == 'ruby'
-      let indent = textobj#methodcall#ruby#current_indent()
-      call textobj#methodcall#ruby#search_head(indent + 1)
-   else
-      normal! %
-   endif
+   call s:syntax_motion('move_to_scope_head')
 endfunction
 
 function! s:move_to_scope_tail()
-   if &filetype == 'ruby'
-      call search(s:get_scope_head())
-      call textobj#methodcall#ruby#search_tail(indent('.'), 'rubyControl')
-   else
-      normal! %
-   endif
+   call s:syntax_motion('move_to_scope_tail')
 endfunction
 command! MoveScopeTail call s:move_to_scope_tail()
 
 function! s:get_scope_head()
-   if &filetype == 'ruby'
-      return '\<do\>'
-   else
-      return '\<(\>'
-   endif
+   call s:syntax_motion('get_scope_head')
 endfunction
 
 function! s:get_scope_tail()
-   if &filetype == 'ruby'
-      return '\<end\>'
+   call s:syntax_motion('get_scope_tail')
+endfunction
+
+function! s:syntax_motion(method)
+   let candidate = 'textobj#methodcall#' . &filetype . '#' . a:method
+   if exists('*' . candidate)
+      execute 'call ' . candidate . '()'
    else
-      return '\<)\>'
+      execute 'call textobj#methodcall#default#' . a:method . '()'
    endif
 endfunction
