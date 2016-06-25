@@ -17,6 +17,6 @@ describe 'JavaScript method selection'
 
   it 'identifies a single parenthesis methodcall'
     8
-    Expect textobj#methodcall#select_i() == ['v', [0, 5, 6, 0], [0, 5, 15, 0]]
+    Expect textobj#methodcall#select_i() == ['v', [0, 8, 13, 0], [0, 8, 52, 0]]
   end
 end
