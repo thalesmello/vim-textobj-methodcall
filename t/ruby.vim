@@ -3,6 +3,7 @@ describe 'Ruby method selection'
     new
     read t/fixtures/sample.rb
     setfiletype ruby
+    syntax on
   end
 
   after
