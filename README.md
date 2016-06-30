@@ -14,10 +14,10 @@ Plug 'kana/vim-textobj-user' | Plug 'thalesmello/vim-textobj-methodcall'
 
 # Default mappings
 
-`am`: around method call. Gets the method call of the surrounding scope.
-`im`: inner method call. Gets the method call of the current scope.
-`aM`: around method call chain. Gets the method call chain of the surrounding scope.
-`iM`: inner method call chain. Gets the method call chain of the current scope.
+* `am`: around method call. Gets the method call of the surrounding scope.
+* `im`: inner method call. Gets the method call of the current scope.
+* `aM`: around method call chain. Gets the method call chain of the surrounding scope.
+* `iM`: inner method call chain. Gets the method call chain of the current scope.
 
 # Custom mappings
 
