@@ -1,6 +1,6 @@
 # vim-textobj-methodcall
 
-This plugin defines a *methodcall* text objt for the [vim-textobj-user](https://github.com/kana/vim-textobj-user) plugin.
+This plugin defines a *methodcall* text object for the [vim-textobj-user](https://github.com/kana/vim-textobj-user) plugin.
 
 ![demo](./methodcall_demo.gif)
 
